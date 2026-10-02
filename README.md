@@ -1,4 +1,4 @@
-[# Mirage Royale
+# Mirage Royale
 
 A mobile-first, real-time social deception and bizarre-trivia party game for 2–8 players. Everyone joins on their own device using a four-character room code.
 
