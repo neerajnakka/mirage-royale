@@ -1,4 +1,4 @@
-# Mirage Royale
+[# Mirage Royale
 
 A mobile-first, real-time social deception and bizarre-trivia party game for 2–8 players. Everyone joins on their own device using a four-character room code.
 
@@ -50,3 +50,4 @@ The automated suite includes engine/store/content/accessibility unit and integra
 - `api/game.ts` — Vercel Node function.
 - `e2e/` and `playwright.config.ts` — real-browser multiplayer and responsive-flow checks.
 - `vercel.json` — Vite single-page-app route fallback; `/api/game` is served by the Vercel function.
+](https://github.com/neerajnakka/mirage-royale.git)
