@@ -30,7 +30,7 @@ The starter bank contains 24 prompts across six categories (four per category). 
 
 ## Multiplayer architecture and deployment
 
-- The frontend calls `/api/game` directly. `api/game.ts` is a Vercel Node function.
+- The frontend calls `/api/game` directly. `src/server/gameHandler.ts` is bundled with esbuild into the standalone ESM Vercel Node function at `api/game.js` before deployment. This avoids Node ESM trying to resolve uncompiled, extensionless TypeScript imports from `src/` at runtime.
 - Vercel Functions may run on different instances. In-memory state is therefore allowed only in the local Vite preview; production refuses to silently use memory.
 - Production rooms are stored in Upstash Redis through Vercel Marketplace credentials. A Redis Lua compare-and-set makes room mutations atomic so concurrent joins and ballots do not overwrite each other. Vercel documents that state shared across function instances should live in an external data store; Vercel KV is no longer offered for new projects and Redis integrations are provisioned through the Marketplace ([Vercel Redis docs](https://vercel.com/docs/redis)). Upstash documents atomic transactions and scripting for its REST API ([Upstash REST API](https://upstash.com/docs/redis/features/restapi)).
 - Player session tokens are random per-device credentials; only a SHA-256 hash is stored server-side. Public room responses redact truth metadata, other players’ submitted answers, author identities, ballots, tactical choices, and session hashes until the appropriate reveal.
@@ -38,7 +38,7 @@ The starter bank contains 24 prompts across six categories (four per category). 
 
 ## Verification performed
 
-- **16 unit/integration tests pass** across scoring and edge cases, authenticated room-store behavior, truth redaction, sourced trivia coverage, core contrast checks, persona selection, and a complete three-round/two-player HTTP match (final scores, awards, winner, and rematch reset).
+- **18 unit/integration tests pass** across scoring and edge cases, authenticated room-store behavior, truth redaction, sourced trivia coverage, core contrast checks, persona selection, the standalone bundled Vercel handler (including its clear missing-storage JSON response), and a complete three-round/two-player HTTP match (final scores, awards, winner, and rematch reset).
 - **2 Playwright Chromium E2E scenarios pass.** One drives two isolated browser contexts through a full three-round match (desktop host + mobile guest), including invite-link join, session restore after refresh, readiness, cross-device reactions, categories, bluffs, wagers, gambits, private Radar scan, kudos, ballots, sequential reveals, podium/persona, clipboard share, and rematch. It checks for browser exceptions and horizontal overflow across mobile gameplay stages. The second covers narrow-screen rulebook tabs, timer settings, AI add/remove, and leaving the room.
 - `npm run build` passes; `npm audit` reports zero known vulnerabilities.
 - This is real-browser **local Vite** testing—not an external-network, production Vercel/Upstash, or multi-browser/device-farm test. The deployed service still requires the owner’s Vercel project and Upstash integration; run a production smoke match on two actual devices after deployment.

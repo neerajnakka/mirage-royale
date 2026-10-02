@@ -22,10 +22,10 @@ Open the Vite URL shown in the terminal. Local preview uses a process-local stor
 
 1. Push this folder to a Git repository, then import it into Vercel (or use Vercel's project import flow).
 2. In Vercel, install an **Upstash Redis** Marketplace integration and connect it to this project. Confirm these server-side environment variables are available: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_API_URL` and `KV_REST_API_TOKEN`).
-3. Deploy. Vercel builds the Vite frontend (`npm run build`) and the Node serverless function at `api/game.ts`.
+3. Deploy. `npm run build` creates the Vite frontend and bundles the Node handler with its TypeScript game/store modules into the standalone ESM function `api/game.js`. Keep this generated file in Git; Vercel serves it at `/api/game`.
 4. Open the production URL on two devices and play through all rounds. Share a join URL or four-character code.
 
-The production handler intentionally refuses to run without shared Redis. Vercel functions are distributed/ephemeral, so an in-memory fallback would make rooms disappear or split between devices. The Redis Lua compare-and-set transaction protects simultaneous joins, votes, and score writes.
+The production handler intentionally refuses to run without shared Redis. Vercel functions are distributed/ephemeral, so an in-memory fallback would make rooms disappear or split between devices. The Redis Lua compare-and-set transaction protects simultaneous joins, votes, and score writes. Bundling the handler is important: Vercel's Node ESM function must not try to load uncompiled, extensionless TypeScript imports from `src/` at runtime.
 
 ## Tests
 
@@ -47,7 +47,8 @@ The automated suite includes engine/store/content/accessibility unit and integra
 - `src/lib/store.ts` — session auth, public-state redaction, local store and atomic Upstash Redis CAS.
 - `src/components/` — responsive game screens and UI pieces.
 - `public/fonts/` — self-hosted Space Grotesk, Plus Jakarta Sans, and JetBrains Mono (with OFL licenses included).
-- `api/game.ts` — Vercel Node function.
+- `src/server/gameHandler.ts` — source handler shared by the Vercel bundle.
+- `scripts/bundle-vercel-api.mjs` — bundles local game/store modules into standalone `api/game.js` during build.
+- `api/game.js` — committed, self-contained Vercel Node function bundle.
 - `e2e/` and `playwright.config.ts` — real-browser multiplayer and responsive-flow checks.
 - `vercel.json` — Vite single-page-app route fallback; `/api/game` is served by the Vercel function.
-](https://github.com/neerajnakka/mirage-royale.git)

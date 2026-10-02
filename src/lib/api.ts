@@ -1,6 +1,6 @@
 import { GameActionPayload, RoomState, StoredGameResponse } from './types';
 
-// The Vercel Node function lives at api/game.ts; local Vite middleware mirrors it.
+// Vercel serves the standalone ESM bundle at api/game.js; local Vite middleware mirrors it.
 const GAME_ENDPOINT = '/api/game';
 const SESSION_PREFIX = 'mirage-session:';
 

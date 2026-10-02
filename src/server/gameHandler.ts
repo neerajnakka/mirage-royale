@@ -1,5 +1,5 @@
-import { processGameRequest } from '../src/lib/store';
-import { GameActionPayload } from '../src/lib/types';
+import { processGameRequest } from '../lib/store';
+import type { GameActionPayload } from '../lib/types';
 
 // Vercel Serverless Function Handler (supports both Node IncomingMessage/ServerResponse and Web Request)
 export default async function handler(req: any, res?: any) {

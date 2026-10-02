@@ -9,7 +9,7 @@
 | Check | Result |
 |---|---:|
 | `npm ci` | Passed |
-| `npm test` | 16/16 tests passed across 6 files |
+| `npm test` | 18/18 tests passed across 7 files |
 | `npm run test:e2e` | 2/2 Playwright Chromium scenarios passed |
 | `npm run build` | Passed |
 | `npm audit` | 0 reported vulnerabilities |
@@ -29,6 +29,10 @@
 - Fixed narrow-phone header overflow by wrapping the room/round status into a centered second row.
 - Associated the room-code and player-name labels with their fields, improving keyboard and assistive-technology access.
 
+## Vercel deployment issue found and fix prepared
+
+The supplied Vercel function log showed `ERR_MODULE_NOT_FOUND` for the extensionless TypeScript import `../src/lib/store`. This happens before Upstash is contacted, so it is a function-bundling/runtime-resolution problem rather than missing Redis variables. The fix moves the handler source to `src/server/gameHandler.ts` and has esbuild generate a self-contained ESM `api/game.js` bundle. The bundled Node handler is now covered by integration tests for room creation and the missing-storage JSON response. The updated `api/game.js` must be pushed to the linked GitHub repository and redeployed; the supplied live deployment has not yet been verified with this fix.
+
 ## Boundaries
 
-This verifies the local Vite app, not a deployed production service. Vercel/Upstash credentials were not supplied, so shared Redis in a deployed project and an externally reachable production URL remain untested. The browser run uses isolated desktop/mobile contexts in one local Chromium process; it is not a physical-device, Safari/Firefox, broad network-failure, or load/stress test. The automated contrast test covers selected core palette pairs, not full WCAG conformance.
+All code verification is local. I cannot redeploy to the user's Vercel project from this workspace. The browser run uses isolated desktop/mobile contexts in one local Chromium process; it is not a physical-device, Safari/Firefox, broad network-failure, or load/stress test. The automated contrast test covers selected core palette pairs, not full WCAG conformance.
